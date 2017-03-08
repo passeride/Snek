@@ -26,11 +26,17 @@ function segment(x, y){
     this.nextSegment;
     // Truning functions
     this.left = function(){
-	this.x -= 1;
+	if(this.x - 1 >= 0)
+	    this.x -= 1;
+	else
+	    alive = false;
     }
 
     this.right = function(){
-	this.x += 1;
+	if(this.x + 1 <= squares)
+	    this.x += 1;
+	else
+	    alive = false;
     }
 
     this.up = function(){
@@ -75,7 +81,10 @@ var up = 1, right = 2, down = 3, left = 4;
 var direction = right;
 var currNomNom;
 var id;
-var FPS = 2;
+var FPS = 10;
+var alive = true;
+var aliveColor = '#00FF00';
+var deathColor = '#DDFFDD';
 
 function start(){    
     c = document.getElementById('daCanvas');
@@ -97,19 +106,15 @@ function start(){
 function keyboardInput(e){
     switch(e.keyCode){
     case 83:
-	console.log('up');
 	upArrow = true;
 	break;
     case 87:
-	console.log('down');
 	downArrow = true;
 	break;
     case 65:
-	console.log('left');
 	leftArrow = true;
 	break;
     case 68:
-	console.log('right');
 	rightArrow = true;
 	break;
     }
@@ -118,11 +123,16 @@ function keyboardInput(e){
 function update(){
     ctx.clearRect(0, 0, c.width, c.height);
     drawGrid();
-    move();
-    checkPosition();
-    moveSegments();
+    if(alive){
+	move();
+	checkPosition();
+	moveSegments();
+    }
     drawNomNom();
     drawSnek();
+    drawSegments();
+    document.getElementById('scoreCounter').innerHTML = "Score: " + points;
+//    console.log(snek);
 }
 
 function checkPosition(){
@@ -131,13 +141,41 @@ function checkPosition(){
 	console.log('hit!');
 	currNomNom.x = parseInt(Math.random() * squares);
 	currNomNom.y = parseInt(Math.random() * squares);
+	points ++;
 	addSegment();
+    }
+
+    var tmpSeg = tail;
+    while(!tmpSeg.isHead){
+	if(tmpSeg.x == head.x && tmpSeg.y == head.y && tmpSeg != head && !tmpSeg.nextSegment.isHead){
+	    console.log('bad shit man!');// works
+	    alive = false;
+	}
+	tmpSeg = tmpSeg.nextSegment;
+    }
+
+    if(head.x >= squares || head.x < 0 || head.y >= squares || head.y < 0){
+	console.log('out of bounds');// Works
+	alive = false;
+    }
+    
+}
+
+function drawSegments(){
+    var tmpSeg = tail;
+    while(!tmpSeg.isHead){
+	if(alive){
+	    ctx.fillStyle = aliveColor;
+	}else{
+	    ctx.fillStyle = deathColor;
+	}
+	ctx.fillRect(tmpSeg.x * dimensions,  tmpSeg.y * dimensions, dimensions, dimensions);
+	tmpSeg = tmpSeg.nextSegment;
     }
 }
 
 function drawNomNom(){
     ctx.fillStyle = '#FF0000';
-    //    ctx.fillRect(currNomNom.x * dimensions - (dimensions / 2), currNomNom.y * dimensions - (dimensions / 2), dimensions, dimensions);
     ctx.fillRect(currNomNom.x * dimensions, currNomNom.y * dimensions, dimensions, dimensions);
 }
 
@@ -146,7 +184,7 @@ function addSegment(){
     newTail.nextSegment = tail;
     tail = newTail;
     snek.push(newTail);
-    console.log('Segments now ' + snek.length);
+//    console.log('Segments now ' + snek.length);
 }
 
 function moveSegments(){
@@ -156,34 +194,38 @@ function moveSegments(){
 	tmpSeg.y = tmpSeg.nextSegment.y;
 	tmpSeg = tmpSeg.nextSegment;
     }
-
-//    for(i = 0; i < count(snek); i++){
-	
-//    }
 }
 
 function move(){
     var dirChange = false;
     if(upArrow){
-	head.up();
-	head.direction = up;
-	upArrow = false;
-	dirChange = true;
+	if(head.direction != down){
+	    head.up();
+	    head.direction = up;
+	    upArrow = false;
+	    dirChange = true;
+	}
     }else if(downArrow){
-	head.down();
-	head.direction = down;
-	downArrow = false;
-	dirChange = true;
+	if(head.direction != up){
+	    head.down();
+	    head.direction = down;
+	    downArrow = false;
+	    dirChange = true;
+	}
     }else if(leftArrow){
-	head.left();
-	head.direction = left;
-	leftArrow = false;
-	dirChange = true;
+	if(head.direction != right){
+	    head.left();
+	    head.direction = left;
+	    leftArrow = false;
+	    dirChange = true;
+	}
     }else if(rightArrow){
-	head.right();
-	head.direction = right;
-	rightArrow = false;
-	dirChange = true;
+	if(head.direction != left){
+	    head.right();
+	    head.direction = right;
+	    rightArrow = false;
+	    dirChange = true;
+	}
     }
 
     head.move(dirChange);
@@ -191,7 +233,11 @@ function move(){
 }
 
 function drawSnek(){
-    ctx.fillStyle = '#00FF00';
+    if(alive){
+	ctx.fillStyle = aliveColor;
+    }else{
+	ctx.fillStyle = deathColor;
+    }
     ctx.fillRect(head.x * dimensions,  head.y * dimensions, dimensions, dimensions);
 }
 
