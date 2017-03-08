@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', start, false);
-window.addEventListener('keydown', this.keyboardInput, false);
+window.addEventListener('keypress', this.keyboardInput, false);
 // This is start
 var c;
 var ctx;
 
-var squares = 15;
-var dimensions = 400/squares;
+var squares = 80;
+var dimensions = 800/squares;
 
 var upArrow = false, downArrow = false, leftArrow = false, rightArrow = false;
 var currPositionX = squares/2, currPositionY = squares/2;
@@ -74,6 +74,7 @@ function segment(x, y){
 }
 
 var snek = [];
+
 var head;
 var tail;
 var up = 1, right = 2, down = 3, left = 4;
@@ -81,7 +82,7 @@ var up = 1, right = 2, down = 3, left = 4;
 var direction = right;
 var currNomNom;
 var id;
-var FPS = 10;
+var FPS = 30;
 var alive = true;
 var aliveColor = '#00FF00';
 var deathColor = '#DDFFDD';
@@ -104,6 +105,7 @@ function start(){
 }
 
 function keyboardInput(e){
+    console.log(e.keyCode);
     switch(e.keyCode){
     case 83:
 	upArrow = true;
@@ -116,6 +118,18 @@ function keyboardInput(e){
 	break;
     case 68:
 	rightArrow = true;
+	break;
+    case 38:
+	// Player two up
+	break;
+    case 37:
+	// Player two left
+	break;
+    case 39:
+	// player two right
+	break;
+    case 40:
+	// player two down
 	break;
     }
 }
@@ -242,16 +256,17 @@ function drawSnek(){
 }
 
 function drawGrid(){
+    ctx.strokeStyle = '#DDDDDD';
     for(var i = 0; i < squares; i++){
 	ctx.beginPath();
 	ctx.moveTo(i * dimensions, 0);
-	ctx.lineTo(i * dimensions, 400);
+	ctx.lineTo(i * dimensions, c.height);
 	ctx.stroke();
     }
     for(var i = 0; i < squares; i++){
 	ctx.beginPath();
 	ctx.moveTo(0, i * dimensions);
-	ctx.lineTo(400, i * dimensions);
+	ctx.lineTo(c.height, i * dimensions);
 	ctx.stroke();
     }
 }
