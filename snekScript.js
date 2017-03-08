@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', start, false);
 window.addEventListener('keydown', this.keyboardInput, false);
-
+// This is start
 var c;
 var ctx;
 
