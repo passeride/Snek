@@ -23,7 +23,7 @@ function segment(x, y){
     this.y = y;
     this.isHead = false;
     this.direction = right;
-    
+    this.nextSegment;
     // Truning functions
     this.left = function(){
 	this.x -= 1;
@@ -69,6 +69,7 @@ function segment(x, y){
 
 var snek = [];
 var head;
+var tail;
 var up = 1, right = 2, down = 3, left = 4;
 // 1 is up, 2 is right, 3 is down 4 is left
 var direction = right;
@@ -83,6 +84,7 @@ function start(){
     var headSegment = new segment(parseInt(squares/2), parseInt(squares/2));
     headSegment.isHead = true;
     head = headSegment;
+    tail = headSegment;
     snek.push(headSegment);
     // Create nomnom for snek
     currNomNom = new NomNom(parseInt(Math.random() * squares),parseInt( Math.random() * squares));
@@ -118,16 +120,18 @@ function update(){
     drawGrid();
     move();
     checkPosition();
+    moveSegments();
     drawNomNom();
     drawSnek();
 }
 
 function checkPosition(){
-    console.log('x: ' + head.x + ' ' + currNomNom.x + ' y:' + head.y + ' ' + currNomNom.y);
+//    console.log('x: ' + head.x + ' ' + currNomNom.x + ' y:' + head.y + ' ' + currNomNom.y);
     if(head.x == currNomNom.x && head.y == currNomNom.y){
 	console.log('hit!');
 	currNomNom.x = parseInt(Math.random() * squares);
 	currNomNom.y = parseInt(Math.random() * squares);
+	addSegment();
     }
 }
 
@@ -137,6 +141,26 @@ function drawNomNom(){
     ctx.fillRect(currNomNom.x * dimensions, currNomNom.y * dimensions, dimensions, dimensions);
 }
 
+function addSegment(){
+    var newTail = new segment(tail.x, tail.y);
+    newTail.nextSegment = tail;
+    tail = newTail;
+    snek.push(newTail);
+    console.log('Segments now ' + snek.length);
+}
+
+function moveSegments(){
+    var tmpSeg = tail;
+    while(!tmpSeg.isHead){
+	tmpSeg.x = tmpSeg.nextSegment.x;
+	tmpSeg.y = tmpSeg.nextSegment.y;
+	tmpSeg = tmpSeg.nextSegment;
+    }
+
+//    for(i = 0; i < count(snek); i++){
+	
+//    }
+}
 
 function move(){
     var dirChange = false;
