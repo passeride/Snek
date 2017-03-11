@@ -12,11 +12,6 @@ var currPositionX = squares/2, currPositionY = squares/2;
 
 var points = 0;
 
-function NomNom(x, y){
-    this.x = x;
-    this.y = y;
-    this.type = 1;
-}
 
 var snek = [];
 
