@@ -3,22 +3,15 @@ window.addEventListener('keypress', this.keyboardInput, false);
 // This is start
 var c;
 var ctx;
-
 var squares = 80;
 var dimensions = 800/squares;
-
 var upArrow = false, downArrow = false, leftArrow = false, rightArrow = false;
 var currPositionX = squares/2, currPositionY = squares/2;
-
 var points = 0;
-
-
 var snek = [];
-
 var head;
 var tail;
 var up = 1, right = 2, down = 3, left = 4;
-// 1 is up, 2 is right, 3 is down 4 is left
 var direction = right;
 var currNomNom;
 var id;

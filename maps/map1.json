@@ -1,0 +1,11 @@
+{
+    "name":"FirstMap",
+    "grid":8,
+    "speed":1,
+    "nom_pr_segment":1,
+    "wall_map_passtrgough":true,
+    "solids":[
+
+	]
+
+}

@@ -1,0 +1,20 @@
+{
+    "_comment":"This file will be used to configure our snek gem, This is template",
+    "name":"Template",
+    "grid":8,
+    "speed":1,
+    "nom_pr_segment":1,
+    "wall_map_passtrgough":false,
+    "solids":[
+	{
+	    "type":2,
+	    "x":2,
+	    "y":2
+	},
+	{
+	    "type":2,
+	    "x":3,
+	    "y":2
+	}
+    ]
+}
