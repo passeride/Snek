@@ -36,17 +36,16 @@
 	    </p>
 	</div>
 
-	
 	<div id="player2" class="playerBoard" >
 	    <p> Player2 </p>
 	    <p id="score">
 		Score: 0
 	    </p>
 	</div>
-	
+
 	<canvas id="daCanvass" width="800" height="800" style="position:aboslute;border:2px solid black; margin-left:auto; margin-right:auto;" >
 	    Your browser does not support canvas!
 	</canvas>
-	
+
     </body>
 </html>
