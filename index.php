@@ -4,7 +4,8 @@
 	    snek
 	</title>
 	<script src="src/keypress-2.1.4.min.js" ></script>
-	 <script src="src/NomNom.js" ></script>
+	<script src="src/Player.js" ></script>
+	<script src="src/NomNom.js" ></script>
 	<script src="src/Segment.js" ></script>
 	<script src="src/GameManager.js" ></script>
     </head>
