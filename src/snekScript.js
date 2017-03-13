@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', start, false);
-window.addEventListener('keypress', this.keyboardInput, false);
+//window.addEventListener('keypress', this.keyboardInput, false);
 // This is start
 var c;
 var ctx;
@@ -20,7 +20,7 @@ var alive = true;
 var aliveColor = '#00FF00';
 var deathColor = '#DDFFDD';
 
-function start(){    
+function start(){
     c = document.getElementById('daCanvas');
     ctx = c.getContext('2d');
     // Creating snek
@@ -28,6 +28,25 @@ function start(){
     headSegment.isHead = true;
     head = headSegment;
     tail = headSegment;
+ 
+    var listener = new window.keypress.Listener();
+
+    listener.simple_combo('a', function(){
+	leftArrow = true;
+    });
+
+    listener.simple_combo('s', function(){
+	upArrow = true;
+    });
+
+    listener.simple_combo('d', function(){
+	rightArrow = true;
+    });
+    
+    listener.simple_combo('w', function(){
+	downArrow = true;
+    });
+
     snek.push(headSegment);
     // Create nomnom for snek
     currNomNom = new NomNom(parseInt(Math.random() * squares),parseInt( Math.random() * squares));
