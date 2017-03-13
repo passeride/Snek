@@ -20,8 +20,20 @@ var config;
 // How many squares in x and y dimension on board
 var squares = 80;
 
+// size of one square
 var dimensions = 800/squares;
 
+// Nom nom is what the sneks want to eat
+// It's one or more that are allways here, when eaten, they just increase points and relocate, possibly also changing type. 
+var Noms = [];
+
+// If this is true the snek will just loop around,
+// if it's false it will dies upon colliding with wall
+var wallLoop = true;
+
+//var FPS  = 30;// TODO: make it possible to change speed of sneks
+
+// This is the first function to be called,  to set everything up 
 function start(){
     // Getting canvas
     c = document.getElementById('daCanvas');// From index.php canvas object
@@ -38,6 +50,11 @@ function start(){
     Player2.color = '#00FF00';
     
     setUpKeyboardListener();
+
+    // Set up NomNom
+    var nom = new NomNom(10, 10);
+    Noms.push(nom);
+
 }
 
 /*
@@ -76,6 +93,10 @@ function setUpKeyboardListener(){
     });
 }
 
+// Debugging stuff
+var frameSkipp = 5;
+var frameCount = 0;
+
 /*
   This is something new, where you can request an animation frame from the brwoser
   and i think it's no long processed on the GUI thread. 
@@ -94,10 +115,12 @@ function setUpAnimationFrame(){
         window.mozCancelRequestAnimationFrame || window.mozCancelAnimationFrame ||
         window.oCancelRequestAnimationFrame || window.oCancelAnimationFrame ||
         window.msCancelRequestAnimationFrame || window.msCancelAnimationFrame;
-    var animation = function(){
-        animationFrame = requestAnimationFrame(animation);
-        update();
-	draw();
+    var animation = function(e){ // Apperently is 60 fps
+        animationFrame = requestAnimationFrame(animation);// This is the number frame number 1,2,3.... 
+	if(animationFrame % frameSkipp == 0){// This slows down the reaction so only during every VAR FRAMESKIPP frames does it draw
+            update();
+	    draw();
+	}
     }
     animationFrame = requestAnimationFrame(animation);
 }
@@ -106,7 +129,11 @@ function setUpAnimationFrame(){
   Here the game logic will be processed, such as adding input logic, and moving pieces
 */
 function update(){
-    //    console.log('hey');
+
+    // Checks the position of players
+    Player1.checkPosition();
+    Player2.checkPosition();
+    // Move players. Also react to change in direction
     Player1.move();
     Player2.move();
 }
@@ -115,10 +142,21 @@ function update(){
   After update this function will kick inn to draw everything on the canvas
 */
 function draw(){
-    ctx.clearRect(0,  0, c.width, c.height);// Clears the previous drawing off canvas
+    // Clears the previous drawing off canvas
+    ctx.clearRect(0,  0, c.width, c.height);
+    
+    // Draw's the grid as background
     drawGrid();
+    
+    // Draw player sneks
     Player1.draw(ctx);
     Player2.draw(ctx);
+    
+    // Draw the nom nom
+    for(var i = 0; i < Noms.length; i++){
+	var nom = Noms[i];
+	nom.draw(ctx);
+    }    
 }
 
 

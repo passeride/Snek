@@ -16,7 +16,7 @@ function Player(playerId, startX, startY){
 
     this.alive = true; // If this is false, no movement will occur. Snek iz dead
 
-
+    this.score = 0; // Score of this player
     
 
     // Start sequense
@@ -33,7 +33,7 @@ function Player(playerId, startX, startY){
      */
     this.draw = function(ctx){
 	var tmpSeg = this.tail;
-	while(!tmpSeg.isHead){ // Every segment but not head
+	while(tmpSeg != undefined && !tmpSeg.isHead){ // Every segment but not head
 	    tmpSeg.draw(ctx, this.color, this.alive);
 	    tmpSeg = tmpSeg.prevSegment;
 	}
@@ -43,13 +43,67 @@ function Player(playerId, startX, startY){
 	ctx.fillRect(this.head.x * dimensions, this.head.y * dimensions, dimensions, dimensions);
     };
 
+
+    /*
+      Checking if self colliding or if snek is eating the a nom nom, also checking if out of bounds
+     */
+    this.checkPosition = function(){
+	if(this.alive){
+	    // Checking if head is on top of nom nom
+	    for(var i = 0; i < Noms.length; i++){
+		if(this.head.x == Noms[i].x && this.head.y == Noms[i].y){
+		    console.log('eating nom nom');
+		    this.score ++;
+		    this.addSegment();
+		    Noms[i].relocate();
+		}
+	    }
+
+	    if(wallLoop){
+		if(this.head.x >= squares){
+		    this.head.x = 0;
+		}else if(this.head.x < 0){
+		    this.head.x = squares;
+		}else if(this.head.y >= squares){
+		    this.head.y = 0;
+		}else if(this.head.y < 0){
+		    this.head.y = squares;
+		}
+	    }else{
+		// Checking if colliding with wall
+		if(this.head.x >= squares || this.head.x < 0 || this.head.y >= squares || this.head.y < 0){
+		    console.log('out of bounds');
+		    this.alive = false;
+		}
+	    }
+	}
+    };
+
+
+
+    /*
+      When snek goes over nom nom, one segment is added and made the new tail
+     */
+    this.addSegment = function(){
+	var newTail = new Segment(this.tail.x, this.tail.y);
+	newTail.prevSegment = this.tail;
+	this.tail = newTail;
+    };
     
     /*
       This is called during GameManager.Update and wil prcess input and move snek
      */
     this.move = function(){
-	var tmpSeg = this.head;
-	tmpSeg.move();
+	if(this.alive){// When ded, snek no move
+	    var tmpSeg = this.head;// Moves Head
+	    tmpSeg.move();
+	    // Move segments
+	    tmpSeg = this.tail;
+	    while(tmpSeg != null && !tmpSeg.isHead){
+		tmpSeg.move();
+		tmpSeg = tmpSeg.prevSegment;
+	    }
+	}
     };
     
     /// Turning directions

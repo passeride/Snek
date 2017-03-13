@@ -9,17 +9,11 @@ function Segment(x, y){
     
     // Truning functions
     this.left = function(){
-	if(this.x - 1 >= 0)
-	    this.x -= 1;
-	else
-	    alive = false;
+	this.x -= 1;
     }
 
     this.right = function(){
-	if(this.x + 1 <= squares)
-	    this.x += 1;
-	else
-	    alive = false;
+	this.x += 1;
     }
 
     this.up = function(){
@@ -38,7 +32,6 @@ function Segment(x, y){
 	if(alive){
 	    ctx.fillStyle = color;
 	}
-	console.log('drawing at ' + this.x + ':' + this.y);
 	ctx.fillRect(this.x * dimensions, this.y * dimensions, dimensions, dimensions);
 	
     }
@@ -46,8 +39,8 @@ function Segment(x, y){
     /*
       This will move in this this.direction's direction if no other orders are given
      */
-    this.move = function(dirChanged){
-	if(!dirChanged){
+    this.move = function(){
+	if(this.isHead){
 	    switch(this.direction){
 	    case UP:
 		this.up();
@@ -62,6 +55,10 @@ function Segment(x, y){
 		this.right();
 		break;
 	    }
+	}else{
+	    // Here we start from the tail and sett the position equals the next segment
+	    this.x = this.prevSegment.x;
+	    this.y = this.prevSegment.y;
 	}
     }
     
