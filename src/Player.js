@@ -30,101 +30,112 @@ function Player(playerId, startX, startY){
 
     /*
       This function will get the context from GameMangaer and draw the snek with all it's segments 
-     */
+    */
     this.draw = function(ctx){
-	var tmpSeg = this.tail;
-	while(tmpSeg != undefined && !tmpSeg.isHead){ // Every segment but not head
-	    tmpSeg.draw(ctx, this.color, this.alive);
-	    tmpSeg = tmpSeg.prevSegment;
-	}
+	      var tmpSeg = this.tail;
+	      while(tmpSeg != undefined && !tmpSeg.isHead){ // Every segment but not head
+	          tmpSeg.draw(ctx, this.color, this.alive);
+	          tmpSeg = tmpSeg.prevSegment;
+	      }
 
-	// Drawing head
-	ctx.fillStyle = this.color;
-	ctx.fillRect(this.head.x * dimensions, this.head.y * dimensions, dimensions, dimensions);
+	      // Drawing head
+	      ctx.fillStyle = this.color;
+	      ctx.fillRect(this.head.x * dimensions, this.head.y * dimensions, dimensions, dimensions);
     };
 
 
     /*
       Checking if self colliding or if snek is eating the a nom nom, also checking if out of bounds
-     */
+    */
     this.checkPosition = function(){
-	if(this.alive){
-	    // Checking if head is on top of nom nom
-	    for(var i = 0; i < Noms.length; i++){
-		if(this.head.x == Noms[i].x && this.head.y == Noms[i].y){
-		    console.log('eating nom nom');
-		    this.score ++;
-		    this.addSegment();
-		    Noms[i].relocate();
-		}
-	    }
+	      if(this.alive){
+	          // Checking if head is on top of nom nom
+	          for(var i = 0; i < Noms.length; i++){
+		            if(this.head.x == Noms[i].x && this.head.y == Noms[i].y){
+		                console.log('eating nom nom');
+		                this.score ++;
+		                this.addSegment();
+		                Noms[i].relocate();
+		            }
+	          }
+            // Check if self collision
+            var tmpSeg = this.tail;
+            while(tmpSeg && !tmpSeg.ishead){
+                if(tmpSeg.x == this.head.x && tmpSeg.y == this.head.y && tmpSeg.prevSegment && !tmpSeg.prevSegment.isHead && tmpSeg.prevSegment.prevSegment && !tmpSeg.prevSegment.prevSegment.isHead){
+                    console.log('death');
+                    this.alive = false;
+                }
+                tmpSeg = tmpSeg.prevSegment;
+            }
 
-	    if(wallLoop){
-		if(this.head.x >= squares){
-		    this.head.x = 0;
-		}else if(this.head.x < 0){
-		    this.head.x = squares;
-		}else if(this.head.y >= squares){
-		    this.head.y = 0;
-		}else if(this.head.y < 0){
-		    this.head.y = squares;
-		}
-	    }else{
-		// Checking if colliding with wall
-		if(this.head.x >= squares || this.head.x < 0 || this.head.y >= squares || this.head.y < 0){
-		    console.log('out of bounds');
-		    this.alive = false;
-		}
-	    }
-	}
+
+            // Check if hit's wall, and if to die or loop around
+	          if(wallLoop){
+		            if(this.head.x >= squares){
+		                this.head.x = 0;
+		            }else if(this.head.x < 0){
+		                this.head.x = squares;
+		            }else if(this.head.y >= squares){
+		                this.head.y = 0;
+		            }else if(this.head.y < 0){
+		                this.head.y = squares;
+		            }
+	          }else{
+		            // Checking if colliding with wall
+		            if(this.head.x >= squares || this.head.x < 0 || this.head.y >= squares || this.head.y < 0){
+		                console.log('out of bounds');
+		                this.alive = false;
+		            }
+	          }
+	      }
     };
 
 
 
     /*
       When snek goes over nom nom, one segment is added and made the new tail
-     */
+    */
     this.addSegment = function(){
-	var newTail = new Segment(this.tail.x, this.tail.y);
-	newTail.prevSegment = this.tail;
-	this.tail = newTail;
+	      var newTail = new Segment(this.tail.x, this.tail.y);
+	      newTail.prevSegment = this.tail;
+	      this.tail = newTail;
     };
-    
+
     /*
       This is called during GameManager.Update and wil prcess input and move snek
-     */
+    */
     this.move = function(){
-	if(this.alive){// When ded, snek no move
-	    var tmpSeg = this.head;// Moves Head
-	    tmpSeg.move();
-	    // Move segments
-	    tmpSeg = this.tail;
-	    while(tmpSeg != null && !tmpSeg.isHead){
-		tmpSeg.move();
-		tmpSeg = tmpSeg.prevSegment;
-	    }
-	}
+	      if(this.alive){// When ded, snek no move
+	          var tmpSeg = this.head;// Moves Head
+	          tmpSeg.move();
+	          // Move segments
+	          tmpSeg = this.tail;
+	          while(tmpSeg != null && !tmpSeg.isHead){
+		            tmpSeg.move();
+		            tmpSeg = tmpSeg.prevSegment;
+	          }
+	      }
     };
-    
+
     /// Turning directions
     // Also checking so cannto turn 180
     this.up = function(){
-	if(this.head.directions != DOWN)
-	    this.head.direction = UP;
+	      if(this.head.directions != DOWN)
+	          this.head.nextDirection = UP;
     };
 
     this.down = function(){
-	if(this.head.direction != UP)
-	    this.head.direction = DOWN;
+	      if(this.head.direction != UP)
+	          this.head.nextDirection = DOWN;
     };
 
     this.left = function(){
-	if(this.head.direction != RIGHT)
-	    this.head.direction = LEFT;
+	      if(this.head.direction != RIGHT)
+	          this.head.nextDirection = LEFT;
     };
 
     this.right = function(){
-	if(this.head.direction != LEFT)
-	    this.head.direction = RIGHT;
+	      if(this.head.direction != LEFT)
+	          this.head.nextDirection = RIGHT;
     };
-}
+};

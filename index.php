@@ -13,8 +13,9 @@
 	     background-color:gray;
 	     outline:2px solid black;
 	     width:100px;
-	     margin-left:200px;
-	     display:inline-block;
+	     margin-left:auto;
+       margin-right:auto;
+	     display:block;
 	 }
 	 canvas{
 	     display:block;
@@ -29,21 +30,21 @@
 
 	<h1 id="scoreCounter" > Snek! </h1>
 
-	<div id="player1" class="playerBoard" >
+	<div id="player1" name="player1" class="playerBoard" >
 	    <p> Player1 </p>
 	    <p id="score">
-		Score: 0
+		      Score: 0pp
 	    </p>
 	</div>
 
-	<div id="player2" class="playerBoard" >
+	<div name="player2" id="player2" class="playerBoard" >
 	    <p> Player2 </p>
 	    <p id="score">
-		Score: 0
+		      Score: 0
 	    </p>
 	</div>
 
-	<canvas id="daCanvass" width="800" height="800" style="position:aboslute;border:2px solid black; margin-left:auto; margin-right:auto;" >
+	<canvas id="daCanvas" width="800" height="800" style="position:aboslute;border:2px solid black; margin-left:auto; margin-right:auto;" >
 	    Your browser does not support canvas!
 	</canvas>
 

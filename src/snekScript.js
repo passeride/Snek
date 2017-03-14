@@ -113,11 +113,11 @@ function checkPosition(){
 
     var tmpSeg = tail;
     while(!tmpSeg.isHead){
-	if(tmpSeg.x == head.x && tmpSeg.y == head.y && tmpSeg != head && !tmpSeg.nextSegment.isHead){
-	    console.log('bad shit man!');// works
-	    alive = false;
-	}
-	tmpSeg = tmpSeg.nextSegment;
+	      if(tmpSeg.x == head.x && tmpSeg.y == head.y && tmpSeg != head && !tmpSeg.nextSegment.isHead){
+	          console.log('bad shit man!');// works
+	          alive = false;
+	      }
+	      tmpSeg = tmpSeg.nextSegment;
     }
 
     if(head.x >= squares || head.x < 0 || head.y >= squares || head.y < 0){
