@@ -6,12 +6,13 @@ var c;
 var ctx;
 
 // Player objects found in src/player.js
-var Player1
+var Player1;
 var Player2;
 // Keyboard listener, from github
 var keyboardListener;
 
-
+// This will be true as long as game is running
+var gameRunning = true;
 // Setting some constanct's to keep direction 
 var UP = 3, RIGHT = 2, DOWN = 1, LEFT = 4;
 
@@ -19,7 +20,7 @@ var UP = 3, RIGHT = 2, DOWN = 1, LEFT = 4;
 var config;
 
 // How many squares in x and y dimension on board
-var squares = 80;
+var squares = 20;
 
 // size of one square
 var dimensions = 800/squares;
@@ -56,14 +57,32 @@ function start(){
     // Setting up players
     Player1 = new Player(1, 5, 5);
     Player2 = new Player(2, 10, 10);
-    Player2.color = '#00FF00';
+    Player2.color = '#0000FF';
 
     setUpKeyboardListener();
 
     // Set up NomNom
     var nom = new NomNom(10, 10);
+    nom.relocate();
     Noms.push(nom);
 
+}
+
+/*
+  this function will be called to start another game, so mostly to resett variables.
+  */
+function restart(){
+    Noms=[];
+    Player1 = new Player(1, 5, 5);
+    Player2 = new Player(2, 10, 10);
+    Player2.color = '#0000FF';
+    var nom = new NomNom(1, 1);
+    nom.relocate();
+    Noms.push(nom);
+    if(!gameRunning){
+        setUpAnimationFrame();
+    }
+    gameRunning = true;
 }
 
 /*
@@ -125,11 +144,13 @@ function setUpAnimationFrame(){
         window.oCancelRequestAnimationFrame || window.oCancelAnimationFrame ||
         window.msCancelRequestAnimationFrame || window.msCancelAnimationFrame;
     var animation = function(e){ // Apperently is 60 fps
-        animationFrame = requestAnimationFrame(animation);// This is the number frame number 1,2,3....
-	      if(animationFrame % frameSkipp == 0){// This slows down the reaction so only during every VAR FRAMESKIPP frames does it draw
-            update();
-	          draw();
-	      }
+        if(gameRunning){
+            animationFrame = requestAnimationFrame(animation);// This is the number frame number 1,2,3....
+	          if(animationFrame % frameSkipp == 0){// This slows down the reaction so only during every VAR FRAMESKIPP frames does it draw
+                update();
+                draw();
+	          }
+        }
     };
     animationFrame = requestAnimationFrame(animation);
 }
@@ -138,21 +159,48 @@ function setUpAnimationFrame(){
   Here the game logic will be processed, such as adding input logic, and moving pieces
 */
 function update(){
+    if(Player1.alive && Player2.alive){
+        // Checks the position of players
+        Player1.checkPosition();// Check position and then movet  
+        Player1.move();
+        Player2.checkPosition();
+        Player2.move();
+        // Updating the scoreboard
+        player1ScoreBoard.innerHTML = 'Score: ' + Player1.score;
+        player2ScoreBoard.innerHTML = 'Score: ' + Player2.score;
+    }else{
+        finnishGame();
+    }
+}
 
-    // Checks the position of players
-    Player1.checkPosition();
-    Player2.checkPosition();
-    // Move players. Also react to change in direction
-    Player1.move();
-    Player2.move();
-    // Updating the scoreboard
 
-    player1ScoreBoard.innerHTML = 'Score: ' + Player1.score;
-    player2ScoreBoard.innerHTML = 'Score: ' + Player2.score;
+function finnishGame(){
+    if(!Player1.alive){
+        player1ScoreBoard.innerHTML = 'DEAD! Score: ' + Player1.score;
+    }else{
+        player1ScoreBoard.innerHTML = 'Alive! Score: ' + Player1.score;
+    }
+
+    if(!Player2.alive){
+        player2ScoreBoard.innerHTML = 'DEAD! Score: ' + Player2.score;
+    }else{
+        player2ScoreBoard.innerHTML = 'Alive! Score: ' + Player2.score;
+    }
+
+    if(Player1.score > Player2.score){
+        console.log('player 1 won');
+    }else if(Player1.score == Player2.score){
+        console.log("It's a tie!");
+    }else{
+        console.log('player 2 won');
+    }
+
+    gameRunning = false;
+
 }
 
 /*
-  After update this function will kick inn to draw everything on the canvas
+  After ulse{pdate this function will kick inn to draw everything on the canvas
 */
 function draw(){
     // Clears the previous drawing off canvas

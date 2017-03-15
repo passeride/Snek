@@ -7,8 +7,8 @@ function Segment(x, y){
     // This is to make sure the direction is not changed two times per cycle
     this.nextDirection = this.direction;
 
-    this.nextSegment; // Legacy, might not use. TODO: Check if this is needed
-    this.prevSegment;// This is a singly linked list, and this is the previous segment
+
+    this.prevSegment; // This is a singly linked list, and this is the previous segment
 
 
     // Truning functions
@@ -33,9 +33,6 @@ function Segment(x, y){
       This will used the context sendt from gamemanager to player, to draw the snek segment
     */
     this.draw = function(ctx, color, alive){
-	      if(alive){
-	          ctx.fillStyle = color;
-	      }
 	      ctx.fillRect(this.x * dimensions, this.y * dimensions, dimensions, dimensions);
     };
 

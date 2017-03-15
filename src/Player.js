@@ -11,13 +11,14 @@ function Player(playerId, startX, startY){
 
     // This is the tail, used to iterate over the singel link list
     var tail;
-    
+
     this.color = '#FF0000'; // This players color
+    this.deathColor = '#000000'; // This will be displayed when player is dead
 
     this.alive = true; // If this is false, no movement will occur. Snek iz dead
 
     this.score = 0; // Score of this player
-    
+
 
     // Start sequense
     this.head = new Segment(this.x, this.y);
@@ -25,21 +26,24 @@ function Player(playerId, startX, startY){
     this.head.direction = DOWN; //Setting start direction
 
 
-    this.tail = this.head; // The last segment added will allways be tail, now we have one segment total, so head is tail. 
-
+    this.tail = this.head; // The last segment added will allways be tail, now we have one segment total, so head is tail.
 
     /*
-      This function will get the context from GameMangaer and draw the snek with all it's segments 
+      This function will get the context from GameMangaer and draw the snek with all it's segments
     */
     this.draw = function(ctx){
 	      var tmpSeg = this.tail;
+        if(this.alive){
+            ctx.fillStyle = this.color;
+        }else{
+            ctx.fillStyle = this.deathColor;
+        }
 	      while(tmpSeg != undefined && !tmpSeg.isHead){ // Every segment but not head
 	          tmpSeg.draw(ctx, this.color, this.alive);
 	          tmpSeg = tmpSeg.prevSegment;
 	      }
 
 	      // Drawing head
-	      ctx.fillStyle = this.color;
 	      ctx.fillRect(this.head.x * dimensions, this.head.y * dimensions, dimensions, dimensions);
     };
 
@@ -68,6 +72,26 @@ function Player(playerId, startX, startY){
                 tmpSeg = tmpSeg.prevSegment;
             }
 
+            // Check if collision with other player
+            if(this == Player1){
+                tmpSeg = Player2.tail;
+                while(tmpSeg){
+                    if(tmpSeg.x == this.head.x && tmpSeg.y == this.head.y && tmpSeg.prevSegment){
+                        console.log('death');
+                        this.alive = false;
+                    }
+                    tmpSeg = tmpSeg.prevSegment;
+                }
+            }else if(this == Player2){
+                tmpSeg = Player1.tail;
+                while(tmpSeg){
+                    if(tmpSeg.x == this.head.x && tmpSeg.y == this.head.y){
+                        console.log('death');
+                        this.alive = false;
+                    }
+                    tmpSeg = tmpSeg.prevSegment;
+                }
+            }
 
             // Check if hit's wall, and if to die or loop around
 	          if(wallLoop){
