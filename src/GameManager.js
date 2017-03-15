@@ -105,9 +105,10 @@ function start(){
 */
 function restart(){
     Noms=[];
-    Player1 = new Player(1, 5, 5);
-    Player2 = new Player(2, 10, 10);
-    Player2.color = '#0000FF';
+    Player1 = new Player(1, CFG.players[0].startX, CFG.players[0].startY);
+    Player2 = new Player(2, CFG.players[1].startY, CFG.players[1].startY);
+    Player1.color = CFG.players[0].color;
+    Player2.color = CFG.players[1].color;
     var nom = new NomNom(1, 1);
     nom.relocate();
     Noms.push(nom);
