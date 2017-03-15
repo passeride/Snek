@@ -10,7 +10,16 @@ function NomNom(x, y){
     };
 
     this.relocate = function(){
-	      this.x = parseInt(Math.random() * squares);
-	      this.y = parseInt(Math.random() * squares);
+        var onBlock = true;
+        while(onBlock){
+            onBlock = false;
+	          this.x = parseInt(Math.random() * squares);
+	          this.y = parseInt(Math.random() * squares);
+            for(i = 0; i < Blocks.length; i++){
+                if(this.x == Blocks[i].x && this.y == Blocks[i].y){
+                    onBlock = true;
+                }
+            }
+        }
     };
 }

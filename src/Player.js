@@ -53,7 +53,7 @@ function Player(playerId, startX, startY){
     */
     this.checkPosition = function(){
 	      if(this.alive){
-	          // Checking if head is on top of nom nom
+	          // Checking if head is on top of nom nom and blocks
 	          for(var i = 0; i < Noms.length; i++){
 		            if(this.head.x == Noms[i].x && this.head.y == Noms[i].y){
 		                console.log('eating nom nom');
@@ -62,6 +62,13 @@ function Player(playerId, startX, startY){
 		                Noms[i].relocate();
 		            }
 	          }
+
+            for(i = 0; i < Blocks.length; i++){
+                if(this.head.x == Blocks[i].x && this.head.y == Blocks[i].y){
+                    this.alive = false;
+                }
+            }
+
             // Check if self collision
             var tmpSeg = this.tail;
             while(tmpSeg && !tmpSeg.ishead){

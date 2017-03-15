@@ -1,11 +1,33 @@
 {
     "name":"FirstMap",
-    "grid":8,
+    "grid":12,
     "speed":1,
+    "players":[
+        {
+            "startX":2,
+            "startY":2,
+            "startDirection":2,
+            "color":"#FF0000"
+        },
+        {
+            "startX":2,
+            "startY":8,
+            "startDirection":2,
+            "color":"#00FFFF"
+        }
+    ],
     "nom_pr_segment":1,
     "wall_map_passtrgough":true,
-    "solids":[
-
-	]
+    "blocks":[
+        {
+            "x":5,
+            "y":5,
+            "color":"#000000"
+        },{
+            "x":6,
+            "y":5,
+            "color":"#000000"
+        }
+	  ]
 
 }

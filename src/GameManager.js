@@ -1,5 +1,8 @@
-document.addEventListener('DOMContentLoaded', start, false);
+document.addEventListener('DOMContentLoaded', preLoad, false);
 
+function preLoad(){
+    loadMap(1);
+}
 // Canvas
 var c;
 // Context
@@ -8,6 +11,7 @@ var ctx;
 // Player objects found in src/player.js
 var Player1;
 var Player2;
+var Players = [];
 // Keyboard listener, from github
 var keyboardListener;
 
@@ -20,14 +24,15 @@ var UP = 3, RIGHT = 2, DOWN = 1, LEFT = 4;
 var config;
 
 // How many squares in x and y dimension on board
-var squares = 20;
+var squares;
 
 // size of one square
-var dimensions = 800/squares;
+var dimensions;
 
 // Nom nom is what the sneks want to eat
 // It's one or more that are allways here, when eaten, they just increase points and relocate, possibly also changing type.
 var Noms = [];
+var Blocks = [];
 
 // If this is true the snek will just loop around,
 // if it's false it will dies upon colliding with wall
@@ -39,8 +44,19 @@ var wallLoop = true;
 var player1ScoreBoard;
 var player2ScoreBoard;
 
+// This is the fps for phycis and movement, but not for rendering
+var FPS = 10.0;
+var MaxFPS = 30;
+var MinFPS = 10;
+
+// This is the config file
+var CFG;
+
 // This is the first function to be called,  to set everything up
 function start(){
+    // Reading from the confg
+    squares = CFG.grid;
+    wallLoop = CFG.wall_map_passtrgough;
     // Getting DOM Stuff
     player1ScoreBoard = document.getElementById('player1');
     player2ScoreBoard = document.getElementById('player2');
@@ -49,15 +65,28 @@ function start(){
     c = document.getElementById('daCanvas');// From index.php canvas object
     ctx = c.getContext('2d'); // Getting context used for drawing and more
 
-    dimension = c.width / squares; // Making sure the dimension of every square is the number of squares devided by witdth of canvas
+    dimensions = c.width / squares; // Making sure the dimension of every square is the number of squares devided by witdth of canvas
 
     // getting the animantion frame
     setUpAnimationFrame();
 
+    // Setting up blocks
+    for(i = 0; i < CFG.blocks.length;i++){
+        var block = new Block(CFG.blocks[i].x,  CFG.blocks[i].y, CFG.blocks[i].color);
+        Blocks.push(block);
+    }
+
     // Setting up players
-    Player1 = new Player(1, 5, 5);
-    Player2 = new Player(2, 10, 10);
-    Player2.color = '#0000FF';
+    /*
+    for(i = 0; i < CFG.players.length; i++){
+        var player = new Player(i, CFG.players[i].startX, CFG.players[i].startY);
+        player.colo = CFG.players[i].color;
+        Players.push(player);
+    }*/ // For when i set up more than two players 
+    Player1 = new Player(1, CFG.players[0].startX, CFG.players[0].startY);
+    Player2 = new Player(2, CFG.players[1].startY, CFG.players[1].startY);
+    Player1.color = CFG.players[0].color;
+    Player2.color = CFG.players[1].color;
 
     setUpKeyboardListener();
 
@@ -66,11 +95,14 @@ function start(){
     nom.relocate();
     Noms.push(nom);
 
+    tick();// This will start the logic
 }
+
+
 
 /*
   this function will be called to start another game, so mostly to resett variables.
-  */
+*/
 function restart(){
     Noms=[];
     Player1 = new Player(1, 5, 5);
@@ -83,6 +115,7 @@ function restart(){
         setUpAnimationFrame();
     }
     gameRunning = true;
+    tick();
 }
 
 /*
@@ -121,9 +154,6 @@ function setUpKeyboardListener(){
     });
 }
 
-// Debugging stuff
-var frameSkipp = 5;
-var frameCount = 0;
 
 /*
   This is something new, where you can request an animation frame from the brwoser
@@ -146,22 +176,30 @@ function setUpAnimationFrame(){
     var animation = function(e){ // Apperently is 60 fps
         if(gameRunning){
             animationFrame = requestAnimationFrame(animation);// This is the number frame number 1,2,3....
-	          if(animationFrame % frameSkipp == 0){// This slows down the reaction so only during every VAR FRAMESKIPP frames does it draw
-                update();
+                //update();
                 draw();
-	          }
         }
     };
     animationFrame = requestAnimationFrame(animation);
 }
 
 /*
+  this will run a seperate script to do the logic
+  i do this because if not i would be restrained to 60 fps, and i plan to use fps to manipulate difficulty
+  */
+function tick(){
+    if(gameRunning){
+        update();
+        setTimeout(tick,1000/FPS);
+    }
+}
+/*
   Here the game logic will be processed, such as adding input logic, and moving pieces
 */
 function update(){
     if(Player1.alive && Player2.alive){
         // Checks the position of players
-        Player1.checkPosition();// Check position and then movet  
+        Player1.checkPosition();// Check position and then move
         Player1.move();
         Player2.checkPosition();
         Player2.move();
@@ -173,7 +211,9 @@ function update(){
     }
 }
 
-
+/*
+  This is called when one or booth of the players are dead.
+*/
 function finnishGame(){
     if(!Player1.alive){
         player1ScoreBoard.innerHTML = 'DEAD! Score: ' + Player1.score;
@@ -209,6 +249,11 @@ function draw(){
     // Draw's the grid as background
     drawGrid();
 
+    // Draw's solids
+    for(i = 0; i < Blocks.length;i++){
+        Blocks[i].draw(ctx);
+    }
+
     // Draw player sneks
     Player1.draw(ctx);
     Player2.draw(ctx);
@@ -238,4 +283,15 @@ function drawGrid(){
 	      ctx.lineTo(c.height, i * dimensions);
 	      ctx.stroke();
     }
+}
+
+function Block(x, y, color){
+    this.x = x;
+    this.y = y;
+    this.color = color;
+
+    this.draw = function(ctx){
+        ctx.fillStyle = color;
+        ctx.fillRect(x * dimensions, y * dimensions, dimensions, dimensions);
+    };
 }

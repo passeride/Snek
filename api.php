@@ -14,6 +14,9 @@ switch($inputMethod){
 }
 
 
+function listMaps(){
+}
+
 /// Returns a json of map, so software can get it from server
 function getMap(){
     $numMap = intval($_GET['MapNo']);

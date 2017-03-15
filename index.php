@@ -3,6 +3,7 @@
         <title>
             snek
         </title>
+        <script src="src/Config.js"></script>
         <script src="src/keypress-2.1.4.min.js" ></script>
         <script src="src/Player.js" ></script>
         <script src="src/NomNom.js" ></script>
@@ -66,7 +67,7 @@
             </p>
         </div>
         <div >
-            <button type="button" class="BigButtonClass" id="startButton" onclick="restart()" name="startButton"> Restart! </button> 
+            <button type="button" class="BigButtonClass" id="startButton" onclick="restart()" name="startButton"> Restart! </button>
         </div>
         <canvas id="daCanvas" width="800" height="800" style="position:aboslute;border:2px solid black; margin-left:auto; margin-right:auto;" >
             Your browser does not support canvas!
