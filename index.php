@@ -49,10 +49,7 @@
         </style>
     </head>
     <body>
-        <!-- Commenting for testing magit -->
-
         <h1 id="headline" >Top Snek! </h1>
-
         <div id="player1" name="player1" class="playerBoard" >
             <p> Player1 </p>
             <p id="score">
@@ -69,6 +66,12 @@
         <div >
             <button type="button" class="BigButtonClass" id="startButton" onclick="restart()" name="startButton"> Restart! </button>
         </div>
+        <label>
+            MapSelect
+            <select id="mapSelect">
+                <option name="hey">Waxzup</option>
+            </select>
+        </label>
         <canvas id="daCanvas" width="800" height="800" style="position:aboslute;border:2px solid black; margin-left:auto; margin-right:auto;" >
             Your browser does not support canvas!
         </canvas>
