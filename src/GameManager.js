@@ -17,7 +17,7 @@ var keyboardListener;
 
 // This will be true as long as game is running
 var gameRunning = true;
-// Setting some constanct's to keep direction 
+// Setting some constanct's to keep direction
 var UP = 3, RIGHT = 2, DOWN = 1, LEFT = 4;
 
 // Config will read json queried from server
@@ -38,7 +38,12 @@ var Blocks = [];
 // if it's false it will dies upon colliding with wall
 var wallLoop = true;
 
-//var FPS  = 30;// TODO: make it possible to change speed of sneks
+// Colors for soling the stuff
+var Colors = ["#00F0F0", "#F0F000"];
+
+
+
+    FPS  = 30;// TODO: make it possible to change speed of sneks
 
 // These are the html tags for the scoreboard, to update score
 var player1ScoreBoard;
@@ -82,7 +87,7 @@ function start(){
         var player = new Player(i, CFG.players[i].startX, CFG.players[i].startY);
         player.colo = CFG.players[i].color;
         Players.push(player);
-    }*/ // For when i set up more than two players 
+    }*/ // For when i set up more than two players
     Player1 = new Player(1, CFG.players[0].startX, CFG.players[0].startY);
     Player2 = new Player(2, CFG.players[1].startY, CFG.players[1].startY);
     Player1.color = CFG.players[0].color;
@@ -92,13 +97,19 @@ function start(){
 
     // Set up NomNom
     var nom = new NomNom(10, 10);
-    nom.relocate();
     Noms.push(nom);
+    createNewNom(Noms.indexOf(nom));
 
     tick();// This will start the logic
+    // Player1.tick();
+    // Player2.tick();
 }
 
-
+function createNewNom(i){
+    var newInt = parseInt(Math.random() * Colors.length);
+    console.log(newInt);
+    Noms[i].relocate(Colors[newInt], newInt);
+};
 
 /*
   this function will be called to start another game, so mostly to resett variables.
@@ -118,7 +129,6 @@ function restart(){
         setUpAnimationFrame();
         tick();
     }
-    
 //    tick();
 }
 
@@ -132,29 +142,29 @@ function setUpKeyboardListener(){
     keyboardListener = new window.keypress.Listener();
 
     keyboardListener.simple_combo('a', function(){
-	      Player1.left();
+        Player1.left();
     });
     keyboardListener.simple_combo('w', function(){
-	      Player1.up();
+        Player1.up();
     });
     keyboardListener.simple_combo('s', function(){
-	      Player1.down();
+        Player1.down();
     });
     keyboardListener.simple_combo('d', function(){
-	      Player1.right();
+        Player1.right();
     });
     // Player 2
     keyboardListener.simple_combo('left', function(){
-	      Player2.left();
+        Player2.left();
     });
     keyboardListener.simple_combo('up', function(){
-	      Player2.up();
+        Player2.up();
     });
     keyboardListener.simple_combo('down', function(){
-	      Player2.down();
+        Player2.down();
     });
     keyboardListener.simple_combo('right', function(){
-	      Player2.right();
+        Player2.right();
     });
 }
 
@@ -180,8 +190,7 @@ function setUpAnimationFrame(){
     var animation = function(e){ // Apperently is 60 fps
         if(gameRunning){
             animationFrame = requestAnimationFrame(animation);// This is the number frame number 1,2,3....
-                //update();
-                draw();
+            draw();
         }
     };
     animationFrame = requestAnimationFrame(animation);
@@ -264,8 +273,8 @@ function draw(){
 
     // Draw the nom nom
     for(var i = 0; i < Noms.length; i++){
-	      var nom = Noms[i];
-	      nom.draw(ctx);
+        var nom = Noms[i];
+        nom.draw(ctx);
     }
 }
 
@@ -276,16 +285,16 @@ function draw(){
 function drawGrid(){
     ctx.strokeStyle = '#DDDDDD';
     for(var i = 0; i < squares; i++){
-	      ctx.beginPath();
-	      ctx.moveTo(i * dimensions, 0);
-	      ctx.lineTo(i * dimensions, c.height);
-	      ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(i * dimensions, 0);
+        ctx.lineTo(i * dimensions, c.height);
+        ctx.stroke();
     }
     for(var i = 0; i < squares; i++){
-	      ctx.beginPath();
-	      ctx.moveTo(0, i * dimensions);
-	      ctx.lineTo(c.height, i * dimensions);
-	      ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(0, i * dimensions);
+        ctx.lineTo(c.height, i * dimensions);
+        ctx.stroke();
     }
 }
 

@@ -1,14 +1,18 @@
-function Segment(x, y){
+function Segment(x, y, color, colorId){
     this.x = x; // X position of segment
     this.y = y; // Y Position of segment
+    this.preX;
+    this.preY;
     this.isHead = false; // if true this is head, and first in the chain
     this.direction = RIGHT; // The head's direction, and the direction it will move if no other commands are given
-
+    this.color = color;
+    this.colorId = colorId;
     // This is to make sure the direction is not changed two times per cycle
     this.nextDirection = this.direction;
 
 
     this.prevSegment; // This is a singly linked list, and this is the previous segment
+    this.nextSegment;
 
 
     // Truning functions
@@ -34,7 +38,12 @@ function Segment(x, y){
       This will used the context sendt from gamemanager to player, to draw the snek segment
     */
     this.draw = function(ctx, color, alive){
-	      ctx.fillRect(this.x * dimensions + (dimensions - dimensions * this.drawScale)/2, this.y * dimensions + (dimensions - dimensions * this.drawScale)/2, dimensions * this.drawScale, dimensions * this.drawScale);
+        if(alive){
+            ctx.fillStyle = this.color;
+        }else{
+            ctx.fillStyle = Player1.deathColor;
+        }
+        ctx.fillRect(this.x * dimensions + (dimensions - dimensions * this.drawScale)/2, this.y * dimensions + (dimensions - dimensions * this.drawScale)/2, dimensions * this.drawScale, dimensions * this.drawScale);
     };
 
     /*
@@ -43,6 +52,8 @@ function Segment(x, y){
     this.move = function(){
         this.direction = this.nextDirection;// Set's the next direction to the direction
 	      if(this.isHead){
+            this.preY = this.y;
+            this.preX = this.x;
 	          switch(this.direction){
 	          case UP:
 		            this.up();
@@ -59,8 +70,13 @@ function Segment(x, y){
 	          }
 	      }else{
 	          // Here we start from the tail and sett the position equals the next segment
-	          this.x = this.prevSegment.x;
-	          this.y = this.prevSegment.y;
+            if(!this.prevSegment.isHead){
+	              this.x = this.prevSegment.x;
+	              this.y = this.prevSegment.y;
+            }else{
+                this.x = this.prevSegment.preX;
+                this.y = this.prevSegment.preY;
+            }
 	      }
     };
 

@@ -21,11 +21,15 @@ function Player(playerId, startX, startY){
 
     this.teleport = false; // Used if moved by checkposition, so the move function does not move it 2 on one round
 
+    this.snek = [];
+
     // Start sequense
     this.head = new Segment(this.x, this.y);
+    this.snek.push(this.head);
     this.head.isHead = true;// Making sure segment know's it's head
     this.head.direction = DOWN; //Setting start direction
 
+    this.speed = 0.01;
 
     this.tail = this.head; // The last segment added will allways be tail, now we have one segment total, so head is tail.
 
@@ -33,17 +37,19 @@ function Player(playerId, startX, startY){
       This function will get the context from GameMangaer and draw the snek with all it's segments
     */
     this.draw = function(ctx){
-	      var tmpSeg = this.tail;
+	      // var tmpSeg = this.tail;
+	      // while(tmpSeg != undefined && !tmpSeg.isHead){ // Every segment but not head
+	          // tmpSeg.draw(ctx, this.color, this.alive);
+	          // tmpSeg = tmpSeg.prevSegment;
+	      // }
+        for(i = 0; i < this.snek.length; i++){
+            this.snek[i].draw(ctx, this.colod, this.alive);
+        }
         if(this.alive){
             ctx.fillStyle = this.color;
         }else{
             ctx.fillStyle = this.deathColor;
         }
-	      while(tmpSeg != undefined && !tmpSeg.isHead){ // Every segment but not head
-	          tmpSeg.draw(ctx, this.color, this.alive);
-	          tmpSeg = tmpSeg.prevSegment;
-	      }
-
 	      // Drawing head
 	      ctx.fillRect(this.head.x * dimensions, this.head.y * dimensions, dimensions, dimensions);
     };
@@ -59,9 +65,10 @@ function Player(playerId, startX, startY){
 		            if(this.head.x == Noms[i].x && this.head.y == Noms[i].y){
 		                console.log('eating nom nom');
 		                this.score ++;
-		                this.addSegment();
-		                Noms[i].relocate();
-		            }
+		                this.addSegment(Noms[i].color, Noms[i].colorId);
+		                // Noms[i].relocate();
+                    createNewNom(i); 
+		            };
 	          }
 
             for(i = 0; i < Blocks.length; i++){
@@ -72,7 +79,9 @@ function Player(playerId, startX, startY){
 
             // Check if self collision
             var tmpSeg = this.tail;
-            while(tmpSeg && !tmpSeg.ishead){
+            // while(tmpSeg && !tmpSeg.ishead){
+            for(i = 0; i < this.snek.length; i++){
+                tmpSeg = this.snek[i];
                 if(tmpSeg.x == this.head.x && tmpSeg.y == this.head.y && tmpSeg.prevSegment && !tmpSeg.prevSegment.isHead && tmpSeg.prevSegment.prevSegment && !tmpSeg.prevSegment.prevSegment.isHead){
                     console.log('death');
                     this.alive = false;
@@ -125,15 +134,60 @@ function Player(playerId, startX, startY){
 	      }
     };
 
-
-
     /*
       When snek goes over nom nom, one segment is added and made the new tail
     */
-    this.addSegment = function(){
-	      var newTail = new Segment(this.tail.x, this.tail.y);
-	      newTail.prevSegment = this.tail;
-	      this.tail = newTail;
+    this.addSegment = function(color, colorId){
+	      var newSeg = new Segment(this.head.preX, this.head.preY, color, colorId);
+        this.snek.push(newSeg);
+        if(this.tail == this.head){// First segment
+            this.head.nextSegment = newSeg;
+            this.tail = newSeg;
+            newSeg.prevSegment = this.head;
+        }else{
+            this.head.nextSegment.prevSegment = newSeg;
+            newSeg.nextSegment = this.head.nextSegment;
+            newSeg.prevSegment = this.head;
+            this.head.nextSegment = newSeg;
+        }
+        this.checkPattern();
+    };
+
+    this.checkPattern = function(){
+        var cId = Colors[0];
+        var numbers = 0;
+        var segments = [];
+        for(i = 0; i < this.snek.length; i++){
+            if(this.snek[i].color == cId){
+                numbers ++;
+                segments.push(this.snek[i]);
+                if(numbers >= 3){
+                    // Do amazing stuff
+                    console.log('stuff');
+                    this.removeSegment(segments[0]);
+                    this.removeSegment(segments[1]);
+                  // this.removeSegment(segments[2]);
+                }
+            }else{
+                segments = [];
+                cId = this.snek[i].color;
+                numbers = 1;
+            }
+        }
+    };
+
+/*
+This will be used to remove segments from the snek
+  */
+    this.removeSegment = function(seg){
+        if(seg == this.tail){
+            seg.prevSegment.nextSegment = null;
+            this.tail = seg.prevSegment;
+            this.snek.splice(this.snek.indexOf(seg), 1);
+        }else{
+            seg.prevSegment.nextSegment = seg.nextSegment;
+            this.snek.splice(this.snek.indexOf(seg), 1);
+        }
     };
 
     /*
@@ -141,14 +195,17 @@ function Player(playerId, startX, startY){
     */
     this.move = function(){
 	      if(this.alive && !this.teleport){// When ded, snek no move
-	          var tmpSeg = this.head;// Moves Head
-	          tmpSeg.move();
+            // if(tmpSeg.nextSegment)
+                // tmpSeg.nextSegment.move();
+            for(i = 0; i < this.snek.length; i++){
+                this.snek[i].move();
+            }
 	          // Move segments
-	          tmpSeg = this.tail;
-	          while(tmpSeg != null && !tmpSeg.isHead){
-		            tmpSeg.move();
-		            tmpSeg = tmpSeg.prevSegment;
-	          }
+	          // tmpSeg = this.head;
+	          // while(tmpSeg != null && this.tail != tmpSeg.nextSegment){
+		            // tmpSeg.move();
+		            // tmpSeg = tmpSeg.nextSegment;
+	          // }
 	      }else{
             this.teleport = false;
         }
@@ -157,7 +214,7 @@ function Player(playerId, startX, startY){
     /// Turning irections
     // Also checking so cannto turn 180
     this.up = function(){
-	      if(this.head.directions != DOWN)
+	      if(this.head.direction != DOWN)
 	          this.head.nextDirection = UP;
     };
 
