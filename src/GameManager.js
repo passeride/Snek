@@ -112,11 +112,14 @@ function restart(){
     var nom = new NomNom(1, 1);
     nom.relocate();
     Noms.push(nom);
+
     if(!gameRunning){
+        gameRunning = true;
         setUpAnimationFrame();
+        tick();
     }
-    gameRunning = true;
-    tick();
+    
+//    tick();
 }
 
 /*

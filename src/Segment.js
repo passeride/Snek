@@ -28,12 +28,13 @@ function Segment(x, y){
 	      this.y += 1;
     };
 
+    this.drawScale = 0.8;
 
     /*
       This will used the context sendt from gamemanager to player, to draw the snek segment
     */
     this.draw = function(ctx, color, alive){
-	      ctx.fillRect(this.x * dimensions, this.y * dimensions, dimensions, dimensions);
+	      ctx.fillRect(this.x * dimensions + (dimensions - dimensions * this.drawScale)/2, this.y * dimensions + (dimensions - dimensions * this.drawScale)/2, dimensions * this.drawScale, dimensions * this.drawScale);
     };
 
     /*

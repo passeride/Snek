@@ -19,6 +19,7 @@ function Player(playerId, startX, startY){
 
     this.score = 0; // Score of this player
 
+    this.teleport = false; // Used if moved by checkposition, so the move function does not move it 2 on one round
 
     // Start sequense
     this.head = new Segment(this.x, this.y);
@@ -99,17 +100,20 @@ function Player(playerId, startX, startY){
                     tmpSeg = tmpSeg.prevSegment;
                 }
             }
-
             // Check if hit's wall, and if to die or loop around
 	          if(wallLoop){
 		            if(this.head.x >= squares){
 		                this.head.x = 0;
+                    this.teleport = true;
 		            }else if(this.head.x < 0){
-		                this.head.x = squares;
+		                this.head.x = squares - 1;
+                    this.teleport = true;
 		            }else if(this.head.y >= squares){
 		                this.head.y = 0;
+                    this.teleport = true;
 		            }else if(this.head.y < 0){
-		                this.head.y = squares;
+		                this.head.y = squares - 1;
+                    this.teleport = true;
 		            }
 	          }else{
 		            // Checking if colliding with wall
@@ -136,7 +140,7 @@ function Player(playerId, startX, startY){
       This is called during GameManager.Update and wil prcess input and move snek
     */
     this.move = function(){
-	      if(this.alive){// When ded, snek no move
+	      if(this.alive && !this.teleport){// When ded, snek no move
 	          var tmpSeg = this.head;// Moves Head
 	          tmpSeg.move();
 	          // Move segments
@@ -145,10 +149,12 @@ function Player(playerId, startX, startY){
 		            tmpSeg.move();
 		            tmpSeg = tmpSeg.prevSegment;
 	          }
-	      }
+	      }else{
+            this.teleport = false;
+        }
     };
 
-    /// Turning directions
+    /// Turning irections
     // Also checking so cannto turn 180
     this.up = function(){
 	      if(this.head.directions != DOWN)
