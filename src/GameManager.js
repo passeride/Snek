@@ -105,6 +105,16 @@ function start(){
     // Player2.tick();
 }
 
+/*
+This will create a block
+  */
+function createBlock(x, y){
+    var block = new Block(x,  y, '#000000');
+    Blocks.push(block);
+    console.log('block created ' + x + ' : ' + y);
+}
+
+// This will create a new nom nom and stuff
 function createNewNom(i){
     var newInt = parseInt(Math.random() * Colors.length);
     console.log(newInt);
@@ -153,6 +163,9 @@ function setUpKeyboardListener(){
     keyboardListener.simple_combo('d', function(){
         Player1.right();
     });
+    keyboardListener.simple_combo('e', function(){
+        Player1.dropBlock();
+    });
     // Player 2
     keyboardListener.simple_combo('left', function(){
         Player2.left();
@@ -165,6 +178,9 @@ function setUpKeyboardListener(){
     });
     keyboardListener.simple_combo('right', function(){
         Player2.right();
+    });
+    keyboardListener.simple_combo('/', function(){
+        Player2.dropBlock();
     });
 }
 

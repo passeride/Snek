@@ -30,6 +30,7 @@ function Player(playerId, startX, startY){
     this.head.direction = DOWN; //Setting start direction
 
     this.speed = 0.01;
+    this.blocks = 0;
 
     this.tail = this.head; // The last segment added will allways be tail, now we have one segment total, so head is tail.
 
@@ -135,6 +136,24 @@ function Player(playerId, startX, startY){
     };
 
     /*
+      This will create a static block beneath the tail
+      */
+    this.dropBlock = function(){
+        if(this.tail.isBlock){
+            if(this.head != this.tail)
+                createBlock(this.tail.x, this.tail.y);
+            else
+                createBlock(this.head.preX, this.head.preY);
+            this.block --;
+            if(this.tail.blocksPrSegment <= 1)
+                this.removeSegment(this.tail);
+            else
+                this.tail.blocksPrSegment --;
+        }else{
+            // cannot drop
+        }
+    };
+    /*
       When snek goes over nom nom, one segment is added and made the new tail
     */
     this.addSegment = function(color, colorId){
@@ -162,11 +181,11 @@ function Player(playerId, startX, startY){
                 numbers ++;
                 segments.push(this.snek[i]);
                 if(numbers >= 3){
-                    // Do amazing stuff
-                    console.log('stuff');
+                    // This will remove the three segments
                     this.removeSegment(segments[0]);
                     this.removeSegment(segments[1]);
-                  // this.removeSegment(segments[2]);
+                    this.removeSegment(this.head.nextSegment);
+                    this.addFollowBlock();
                 }
             }else{
                 segments = [];
@@ -185,11 +204,22 @@ This will be used to remove segments from the snek
             this.tail = seg.prevSegment;
             this.snek.splice(this.snek.indexOf(seg), 1);
         }else{
-            seg.prevSegment.nextSegment = seg.nextSegment;
-            this.snek.splice(this.snek.indexOf(seg), 1);
+            console.log(this.snek);
+            console.log(seg);
+                seg.prevSegment.nextSegment = seg.nextSegment;
+                seg.nextSegment.prevSegment = seg.prevSegment;
+                this.snek.splice(this.snek.indexOf(seg), 1);
         }
     };
 
+    this.addFollowBlock = function(){
+        var newSeg = new Segment(this.tail.x, this.tail.y, '#000000', -1);
+        newSeg.isBlock = true;
+        this.snek.push(newSeg);
+        this.tail.nextSegment = newSeg;
+        newSeg.prevSegment = this.tail;
+        this.tail = newSeg;
+    };
     /*
       This is called during GameManager.Update and wil prcess input and move snek
     */
