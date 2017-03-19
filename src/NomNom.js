@@ -11,6 +11,7 @@ function NomNom(x, y, color, colorId){
 	      ctx.fillRect(this.x * dimensions, this.y * dimensions, dimensions, dimensions);
     };
 
+    
     this.relocate = function(color, colorId){
         var onBlock = true;
         this.color = color;

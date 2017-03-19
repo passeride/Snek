@@ -39,7 +39,7 @@ var Blocks = [];
 var wallLoop = true;
 
 // Colors for soling the stuff
-var Colors = ["#00F0F0", "#F0F000"];
+var Colors = ["#00F0F0", "#F0F000", "#CD00CD", "#04AF28", "#012FDA"];
 
 
 
@@ -56,7 +56,9 @@ var MinFPS = 10;
 
 // This is the config file
 var CFG;
-
+var GlobalBlocksPrSeg = 5;
+var LostSegTurnToBlock = true;
+var timePrColor;
 // This is the first function to be called,  to set everything up
 function start(){
     // Reading from the confg
@@ -80,6 +82,9 @@ function start(){
         var block = new Block(CFG.blocks[i].x,  CFG.blocks[i].y, CFG.blocks[i].color);
         Blocks.push(block);
     }
+    // Set up some more confgig
+    LostSegTurnToBlock = CFG.LostSegTurnToBlock;
+    GlobalBlocksPrSeg = CFG.blocksPrSegment;
 
     // Setting up players
     /*
@@ -121,6 +126,11 @@ function createNewNom(i){
     Noms[i].relocate(Colors[newInt], newInt);
 };
 
+function changeColorOfNom(i){
+    var newInt = parseInt(Math.random() * Colors.length);
+    Noms[i].color = Colors[newInt];
+    Noms[i].colorId = newInt;
+};
 /*
   this function will be called to start another game, so mostly to resett variables.
 */
@@ -165,6 +175,10 @@ function setUpKeyboardListener(){
     });
     keyboardListener.simple_combo('e', function(){
         Player1.dropBlock();
+    });
+    keyboardListener.simple_combo('q', function(){
+        Player1.addSegment(Noms[0].color, Noms[0].colorId);
+        createNewNom(0);
     });
     // Player 2
     keyboardListener.simple_combo('left', function(){

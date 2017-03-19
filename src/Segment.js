@@ -6,8 +6,7 @@ function Segment(x, y, color, colorId){
     this.isHead = false; // if true this is head, and first in the chain
     this.direction = RIGHT; // The head's direction, and the direction it will move if no other commands are given
     this.isBlock = false;
-    this.blocksPrSegment = 5;
-     bb
+    this.blocksPrSegment = GlobalBlocksPrSeg;
     this.color = color;
     this.colorId = colorId;
     // This is to make sure the direction is not changed two times per cycle

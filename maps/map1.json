@@ -2,6 +2,9 @@
     "name":"FirstMap",
     "grid":32,
     "speed":1,
+    "LostSegTurnToBlock":true,
+    "blocksPrSegment": 5,
+    "timePrColor":3.4,
     "players":[
         {
             "startX":2,

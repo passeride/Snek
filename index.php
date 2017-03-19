@@ -46,6 +46,17 @@
              margin-left:auto;
              margin-right:auto;
          }
+         .rules{
+             background-color:gray;
+             color:white;
+             display:block;
+             left:0;
+             width:20%;
+             float:left;
+             border:2px solid black;
+             top:50%;
+             position:fixed;
+         }
         </style>
     </head>
     <body>
@@ -72,6 +83,12 @@
                 <option name="hey">Waxzup</option>
             </select>
         </label>
+        <div class="rules" id="rulesBoard">
+            Pick up noms!<br/>
+            Don't hit Black Blocks <br/>
+            Don't hit yourslef! <br/>
+            Hit other player to make big snek smaller snek! <br/>
+        </div>
         <canvas id="daCanvas" width="800" height="800" style="position:aboslute;border:2px solid black; margin-left:auto; margin-right:auto;" >
             Your browser does not support canvas!
         </canvas>
