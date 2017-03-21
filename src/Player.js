@@ -89,8 +89,8 @@ function Player(playerId, startX, startY){
             if(this == Player1){
                 tmpSeg = Player2.tail;
                 while(tmpSeg){
-                    if(tmpSeg.x == this.head.x && tmpSeg.y == this.head.y && tmpSeg.prevSegment){
-                        if(tmpSeg.prevSegment.isHead)
+                    if(tmpSeg.x == this.head.x && tmpSeg.y == this.head.y){
+                        if((tmpSeg.prevSegment && tmpSeg.prevSegment.isHead) || (tmpSeg.prevSegment && tmpSeg.prevSegment.prevSegment && tmpSeg.prevSegment.prevSegment.isHead) || tmpSeg.isHead)
                             Player2.looseSnek();
                         else
                             Player2.spliceSnek(tmpSeg);
@@ -101,7 +101,7 @@ function Player(playerId, startX, startY){
                 tmpSeg = Player1.tail;
                 while(tmpSeg){
                     if(tmpSeg.x == this.head.x && tmpSeg.y == this.head.y){
-                        if(tmpSeg.prevSegment.isHead)
+                        if((tmpSeg.prevSegment && tmpSeg.prevSegment.isHead) || (tmpSeg.prevSegment && tmpSeg.prevSegment.prevSegment && tmpSeg.prevSegment.prevSegment.isHead) || tmpSeg.ishead)
                             Player1.looseSnek();
                         else
                             Player1.spliceSnek(tmpSeg);
@@ -141,6 +141,7 @@ function Player(playerId, startX, startY){
     */
     this.looseSnek = function(){
         // this.spliceSnek(this.head.nextSegment);
+        console.log('lossing snek');
         this.snek = [];
         this.snek.push(this.head);
         this.tail = this.head;
@@ -150,6 +151,10 @@ function Player(playerId, startX, startY){
       this will remove all segments after this and mabye turn them to blocks
       */
     this.spliceSnek = function(seg){
+        console.log('splicing snek');
+        console.log(this.snek.length);
+        if(this.snek.length == 1)
+            return 0;
         var poss = this.snek.indexOf(seg);
         this.snek[poss].nextSegment = null;
         this.tail = this.snek[poss];

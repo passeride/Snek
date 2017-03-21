@@ -33,17 +33,15 @@ var dimensions;
 // It's one or more that are allways here, when eaten, they just increase points and relocate, possibly also changing type.
 var Noms = [];
 var Blocks = [];
+var MapBlocks = [];
 
 // If this is true the snek will just loop around,
 // if it's false it will dies upon colliding with wall
 var wallLoop = true;
 
 // Colors for soling the stuff
-var Colors = ["#00F0F0", "#F0F000", "#CD00CD", "#04AF28", "#012FDA"];
-
-
-
-    FPS  = 30;// TODO: make it possible to change speed of sneks
+var Colors = ["#00F0F0", "#F0F000", "#CD00CD"];
+FPS  = 30;
 
 // These are the html tags for the scoreboard, to update score
 var player1ScoreBoard;
@@ -81,6 +79,7 @@ function start(){
     for(i = 0; i < CFG.blocks.length;i++){
         var block = new Block(CFG.blocks[i].x,  CFG.blocks[i].y, CFG.blocks[i].color);
         Blocks.push(block);
+        MapBlocks.push(block);
     }
     // Set up some more confgig
     LostSegTurnToBlock = CFG.LostSegTurnToBlock;
@@ -103,7 +102,8 @@ function start(){
     // Set up NomNom
     var nom = new NomNom(10, 10);
     Noms.push(nom);
-    createNewNom(Noms.indexOf(nom));
+    createNewNom(0);
+    // createNewNom(Noms.indexOf(nom));
 
     tick();// This will start the logic
     // Player1.tick();
@@ -141,9 +141,13 @@ function restart(){
     Player1.color = CFG.players[0].color;
     Player2.color = CFG.players[1].color;
     var nom = new NomNom(1, 1);
-    nom.relocate();
+    // nom.relocate();
     Noms.push(nom);
+    createNewNom(0);
 
+    // Removing temp blocks
+    Blocks = [];
+    Blocks = Blocks.concat(MapBlocks);
     if(!gameRunning){
         gameRunning = true;
         setUpAnimationFrame();
@@ -161,6 +165,9 @@ function setUpKeyboardListener(){
     // Setting up keyboard listnere
     keyboardListener = new window.keypress.Listener();
 
+    keyboardListener.simple_combo('space', function(){
+        restart();
+    });
     keyboardListener.simple_combo('a', function(){
         Player1.left();
     });
